@@ -6,7 +6,14 @@ print(f"{'----':<8}-----")
 
 codes = []
 for char in text:
-    code = ord(char)              
+    code = ord(char) 
+    for char in text:
+    code = ord(char)
+    if code > 127:
+        print(f"{repr(char):<8}not ASCII")
+        continue
+    codes.append(code)
+    print(f"{repr(char):<8}{code}")
     codes.append(code)
     print(f"{repr(char):<8}{code}")
 
