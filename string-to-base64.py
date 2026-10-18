@@ -1,6 +1,6 @@
-text = input("Enter a string: ")
+text = input("Enter a string: ") 
 
-# Base64 encodes bytes, so convert the text to UTF-8 first.
+# Base64 encodes bytes, so convert the text to UTF-8 first. 
 data = text.encode("utf-8")
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
