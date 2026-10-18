@@ -1,0 +1,20 @@
+text = input("Enter a string: ")
+
+print()
+print(f"{'Char':<8}{'ASCII':<8}Binary")
+print(f"{'----':<8}{'-----':<8}------")
+
+bits = []
+for char in text:
+    code = ord(char)                 # character -> ASCII number
+    if code > 127:
+        print(f"{repr(char):<8}not ASCII")
+        continue
+    binary = format(code, "08b")     # ASCII number -> 8 bits (1s and 0s)
+    bits.append(binary)
+    print(f"{repr(char):<8}{code:<8}{binary}")
+
+print()
+print(f"Input   : {text}")
+print(f"Bits    : {len(bits) * 8}")
+print(f"Binary  : {' '.join(bits)}")
