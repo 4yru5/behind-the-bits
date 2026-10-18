@@ -18,3 +18,19 @@ print()
 print(f"Input   : {text}")
 print(f"Bits    : {len(bits) * 8}")
 print(f"Binary  : {' '.join(bits)}")
+
+places = [128, 64, 32, 16, 8, 4, 2, 1]
+
+print()
+print("How the bits add up:")
+for char in text:
+    code = ord(char)
+    if code > 127:
+        continue
+    binary = format(code, "08b")
+    used = [str(p) for p, b in zip(places, binary) if b == "1"]
+    print()
+    print(f"{repr(char)} = {code}")
+    print("  Place : " + " ".join(f"{p:>3}" for p in places))
+    print("  Bit   : " + " ".join(f"{b:>3}" for b in binary))
+    print(f"  Sum   : {' + '.join(used)} = {code}")
