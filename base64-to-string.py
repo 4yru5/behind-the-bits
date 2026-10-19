@@ -29,7 +29,13 @@ else:
         byte_count = 3 - padded.count("=")
         block_bytes = bytes(int(bits[index:index + 8], 2) for index in range(0, byte_count * 8, 8))
         print(f"{start // 4 + 1:<5}  {padded:<6}  {' '.join(f'{v:06b}' for v in values):<27}  {bits}")
-        print(f"       -> bytes: {' '.join(str(byte) for byte in block_bytes)}")
+        print("")
+        print("       ASCII  Character")
+        print("       -----  ---------")
+        for byte in block_bytes:
+            char = repr(chr(byte)) if byte < 128 else "not ASCII"
+            print(f"       {byte:<5}  {char}")
+        print("")
 
     try:
         result = data.decode("utf-8")
