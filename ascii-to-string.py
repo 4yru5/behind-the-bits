@@ -1,49 +1,52 @@
-def decode_concatenated(digits):
-    """Split digits into ASCII values, preferring the most readable result."""
-    # Dynamic programming avoids a greedy split getting stuck on an invalid
-    # three-digit prefix. For ties, prefer fewer control characters, then
-    # longer codes (the usual ASCII notation is two or three digits).
+def split_codes(digits):
+    """Choose a printable ASCII split for an unseparated digit string."""
     best = [None] * (len(digits) + 1)
-    best[0] = (0, 0, "")
+    best[0] = (0, 0, ())
 
     for start in range(len(digits)):
         if best[start] is None:
             continue
-        controls, negative_code_lengths, decoded = best[start]
+        controls, length_score, codes = best[start]
         for end in range(start + 1, min(start + 3, len(digits)) + 1):
-            piece = digits[start:end]
-            code = int(piece)
-            if code > 127 or (len(piece) > 1 and piece.startswith("0")):
+            part = digits[start:end]
+            code = int(part)
+            if code > 127 or (len(part) > 1 and part[0] == "0"):
                 continue
             char = chr(code)
-            printable = char.isprintable()
             candidate = (
-                controls + (not printable),
-                negative_code_lengths - len(piece),
-                decoded + char,
+                controls + (not char.isprintable()),
+                length_score - len(part),
+                codes + (code,),
             )
-            current = best[end]
-            if current is None or candidate[:2] < current[:2]:
+            if best[end] is None or candidate[:2] < best[end][:2]:
                 best[end] = candidate
 
     return None if best[-1] is None else best[-1][2]
 
 
-text = input("Enter ASCII codes (spaces optional): ").strip()
+text = input("Enter ASCII decimal codes: ").strip()
+codes = None
 
 if not text:
-    print("")
-elif not all(char.isdigit() or char.isspace() for char in text):
-    print("Please enter ASCII codes using digits and optional spaces.")
+    codes = ()
+elif not all(char in "0123456789" or char.isspace() for char in text):
+    print("Use decimal ASCII codes with optional spaces.")
 elif len(text.split()) > 1:
-    tokens = text.split()
-    if any(len(token) > 3 or int(token) > 127 for token in tokens):
-        print("Please use ASCII values from 0 to 127.")
+    values = text.split()
+    if all(len(value) <= 3 and int(value) <= 127 for value in values):
+        codes = tuple(map(int, values))
     else:
-        print("".join(chr(int(token)) for token in tokens))
+        print("Each ASCII code must be between 0 and 127.")
 else:
-    decoded = decode_concatenated(text)
-    if decoded is None:
-        print("These digits cannot be split into ASCII values from 0 to 127.")
-    else:
-        print(decoded)
+    codes = split_codes(text)
+    if codes is None:
+        print("Could not split the digits into ASCII codes from 0 to 127.")
+
+if codes is not None:
+    decoded = "".join(map(chr, codes))
+    print("\nASCII  Character")
+    print("-----  ---------")
+    for code in codes:
+        print(f"{code:<6}  {chr(code)!r}")
+    print("\nResulting string for the ASCII values is:")
+    print(decoded)
